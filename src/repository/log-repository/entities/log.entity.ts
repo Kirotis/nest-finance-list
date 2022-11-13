@@ -21,7 +21,7 @@ export class Log {
   @Prop({ type: SchemaTypes.ObjectId, ref: Category.name, required: true })
   categoryId: ObjectId;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: Number, required: true, min: 0 })
   money: number;
 
   @Prop({ type: SchemaTypes.Date, default: Date.now() })

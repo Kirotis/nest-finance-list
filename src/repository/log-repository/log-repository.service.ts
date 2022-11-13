@@ -18,23 +18,8 @@ export class LogRepositoryService extends BaseService<LogDocument> {
   }
 
   findWithFilter(filter: FilterLog) {
-    const filterQuery: FilterQuery<LogDocument> = {
-      date: {
-        $gte: filter.startDate ?? 0,
-        $lte: filter.endDate ?? Date.now(),
-      },
-    };
-    if (filter.search?.length) {
-      filterQuery.title = { $regex: filter.search, $options: 'i' };
-    }
-    if (filter.categoryFilter?.length) {
-      filterQuery.categoryId = { $in: filter.categoryFilter };
-    }
-    return this.model
-      .find(filterQuery, null, {
-        sort: { date: filter.sort == 'asc' ? 1 : -1 },
-      })
-      .exec();
+    const sortedFilter = this.filterAndSortLogs(filter);
+    return sortedFilter.limit(20).exec();
   }
 
   async update(
@@ -55,8 +40,37 @@ export class LogRepositoryService extends BaseService<LogDocument> {
       createItem.categoryId,
     );
     if (!isExists) {
-      throw new Error('Category not found');
+      return Promise.reject(new Error('Category not found'));
     }
     return super.create(createItem);
+  }
+
+  findWithPagination(skipItems: number, takeItems: number, filter: FilterLog) {
+    const query = this.filterAndSortLogs(filter);
+    return query.skip(skipItems).limit(takeItems).exec();
+  }
+
+  crateQueryWithFilter(filter: Omit<FilterLog, 'sort'>) {
+    const filterQuery: FilterQuery<LogDocument> = {
+      date: {
+        $gte: filter.startDate ?? 0,
+        $lte: filter.endDate ?? Date.now(),
+      },
+    };
+    if (filter.search?.length) {
+      filterQuery.title = { $regex: filter.search, $options: 'i' };
+    }
+    if (filter.categoryFilter?.length) {
+      filterQuery.categoryId = { $in: filter.categoryFilter };
+    }
+    return this.model.find(filterQuery);
+  }
+
+  private filterAndSortLogs(filter: FilterLog) {
+    const filtredQuery = this.crateQueryWithFilter(filter);
+    const sortedFilter = filtredQuery.sort({
+      date: filter.sort == 'asc' ? 1 : -1,
+    });
+    return sortedFilter;
   }
 }

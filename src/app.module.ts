@@ -9,6 +9,8 @@ import { AppService } from './app.service';
 import { LogModule } from './log/log.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PlanModule } from './plan/plan.module';
+import { AuthModule } from './auth/auth.module';
 import 'dotenv/config';
 
 export const mongooseForRootConfug: MongooseModuleAsyncOptions = {
@@ -30,6 +32,8 @@ export const mongooseForRootConfug: MongooseModuleAsyncOptions = {
     ConfigModule.forRoot({ isGlobal: true }),
     LogModule,
     CategoriesModule,
+    PlanModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
