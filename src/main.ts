@@ -10,12 +10,15 @@ async function bootstrap() {
 
   initSwagger(app);
 
-  await app.listen(process.env.PORT, process.env.HOSTNAME, () => {
-    console.info(
-      '\x1b[36m%s\x1b[0m',
-      `URL: http://${process.env.HOSTNAME}:${process.env.PORT}`,
-    );
-  });
+  await app.listen(
+    process.env.PORT,
+    //   , () => {
+    //   console.info(
+    //     '\x1b[36m%s\x1b[0m',
+    //     `URL: http://${process.env.HOSTNAME}:${process.env.PORT}`,
+    //   );
+    // }
+  );
 }
 
 function initSwagger(app: INestApplication) {
