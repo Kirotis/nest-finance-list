@@ -11,7 +11,7 @@ async function bootstrap() {
   initSwagger(app);
 
   await app.listen(
-    process.env.PORT,
+    process.env.PORT || 3000,
     //   , () => {
     //   console.info(
     //     '\x1b[36m%s\x1b[0m',
